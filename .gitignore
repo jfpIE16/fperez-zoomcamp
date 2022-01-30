@@ -1,3 +1,5 @@
 **/private_keys
 **.csv
 **.code-workspace
+**.env
+**.tfstate**
