@@ -15,10 +15,9 @@ import pyarrow.parquet as pq
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
 
-URL_PREFIX = 'https://s3.amazonaws.com/nyc-tlc/trip+data'
-URL_TEMPLATE = URL_PREFIX + '/yellow_tripdata_{{ execution_date.strftime(\'%Y-%m\') }}.csv'
+URL = 'https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv'
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "opt/airflow")
-DATASET_TEMPLATE = "yellow_tripdata_{{ execution_date.strftime(\'%Y-%m\')}}.csv"
+DATASET_TEMPLATE = "taxi_zone_lookup_{{ execution_date.strftime(\'%Y-%m\')}}.csv"
 PARQUET_TEMPLATE = DATASET_TEMPLATE.replace('.csv', '.parquet')
 
 path_to_creds = f"{path_to_local_home}/google_credentials.json"
@@ -52,15 +51,15 @@ def upload_to_gcs(bucket, object_name, local_file):
 
 default_args = {
     "owner": "airflow",
-    "start_date": datetime(2019,1,1),
+    "start_date": days_ago(1),
     "depends_on_past": False,
     "retries": 1,
 }
 
 # NOTE: DAG declaration - using a Context Manger (an implicit way)
 with DAG(
-    dag_id="data_ingestion_gcs_dag_v02",
-    schedule_interval="@monthly",
+    dag_id="data_ingestion_gcs_dag_zones",
+    schedule_interval="@once",
     default_args=default_args,
     catchup=True,
     max_active_runs=3,
@@ -69,7 +68,7 @@ with DAG(
 
     download_dataset_task = BashOperator(
         task_id="download_dataset_task",
-        bash_command=f"curl -sSLf {URL_TEMPLATE} > {path_to_local_home}/{DATASET_TEMPLATE}"
+        bash_command=f"curl -sSLf {URL} > {path_to_local_home}/{DATASET_TEMPLATE}"
     )
 
     format_to_parquet = PythonOperator(

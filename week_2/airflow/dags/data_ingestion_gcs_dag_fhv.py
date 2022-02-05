@@ -15,10 +15,10 @@ import pyarrow.parquet as pq
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
 
-URL_PREFIX = 'https://s3.amazonaws.com/nyc-tlc/trip+data'
-URL_TEMPLATE = URL_PREFIX + '/yellow_tripdata_{{ execution_date.strftime(\'%Y-%m\') }}.csv'
+URL_PREFIX = 'https://nyc-tlc.s3.amazonaws.com/trip+data'
+URL_TEMPLATE = URL_PREFIX + '/fhv_tripdata_{{ execution_date.strftime(\'%Y-%m\') }}.csv'
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "opt/airflow")
-DATASET_TEMPLATE = "yellow_tripdata_{{ execution_date.strftime(\'%Y-%m\')}}.csv"
+DATASET_TEMPLATE = "fhv_tripdata_{{ execution_date.strftime(\'%Y-%m\')}}.csv"
 PARQUET_TEMPLATE = DATASET_TEMPLATE.replace('.csv', '.parquet')
 
 path_to_creds = f"{path_to_local_home}/google_credentials.json"
@@ -59,7 +59,7 @@ default_args = {
 
 # NOTE: DAG declaration - using a Context Manger (an implicit way)
 with DAG(
-    dag_id="data_ingestion_gcs_dag_v02",
+    dag_id="data_ingestion_gcs_dag_fhv",
     schedule_interval="@monthly",
     default_args=default_args,
     catchup=True,

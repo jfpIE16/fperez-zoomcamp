@@ -6,5 +6,5 @@ GCP_PROJECT_ID="daring-codex-339319"
 
 cd ${terradir}
 terraform init
-terraform plan -var=${GCP_PROJECT_ID}
-terraform apply -var=${GCP_PROJECT_ID}
+terraform plan -var="daring-codex-339319"
+terraform apply -var="daring-codex-339319"
