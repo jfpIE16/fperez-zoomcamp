@@ -5,5 +5,6 @@ GCP_PROJECT_ID="daring-codex-339319"
 BQ_DATASET="trips_data_all"
 
 cd ${terradir}
-sh delete-bq-tables.sh ${GCP_PROJECT_ID} ${BQ_DATASET}
-terraform destroy -var=${GCP_PROJECT_ID}
+echo $GCP_PROJECT_ID
+sh delete-bq-tables.sh $GCP_PROJECT_ID $BQ_DATASET
+terraform destroy -var=$GCP_PROJECT_ID
